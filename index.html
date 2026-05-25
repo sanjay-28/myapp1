@@ -1,19 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>GCP CI/CD Demo</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Server Test App</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .info {
+      margin-top: 25px;
+      line-height: 1.8;
+    }
+
+    code {
+      background: #eee;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to GCP CI/CD Pipeline</h1>
-    <h2>Application deployed successfully using:</h2>
 
-    <ul>
-        <li>GitHub</li>
-        <li>Cloud Build</li>
-        <li>Artifact Registry</li>
-        <li>Cloud Run</li>
-    </ul>
+  <div class="container">
+    <h1>Web Server Test App</h1>
 
-    <p>Developer: Sanjay</p>
+    <p>This page checks if your web server is working properly.</p>
+
+    <button onclick="testServer()">Run Server Test</button>
+
+    <div id="result"></div>
+
+    <div class="info">
+      <h3>Server Information</h3>
+      <p><strong>Browser:</strong> <span id="browser"></span></p>
+      <p><strong>Platform:</strong> <span id="platform"></span></p>
+      <p><strong>Current Time:</strong> <span id="time"></span></p>
+    </div>
+  </div>
+
+  <script>
+    // Display client info
+    document.getElementById("browser").innerText = navigator.userAgent;
+    document.getElementById("platform").innerText = navigator.platform;
+    document.getElementById("time").innerText = new Date().toString();
+
+    function testServer() {
+      const result = document.getElementById("result");
+
+      // Simulate server check
+      fetch(window.location.href, {
+        method: "HEAD"
+      })
+      .then(response => {
+        result.innerHTML = `
+          <div class="status success">
+            ✅ Server is running successfully! <br>
+            HTTP Status: ${response.status}
+          </div>
+        `;
+      })
+      .catch(error => {
+        result.innerHTML = `
+          <div class="status error">
+            ❌ Server test failed! <br>
+            Error: ${error}
+          </div>
+        `;
+      });
+    }
+  </script>
+
 </body>
 </html>
