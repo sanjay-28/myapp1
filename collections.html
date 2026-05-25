@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeThread India | Vibrant Fashion & Clothing</title>
+    <style>
+        /* --- Color Palette & Variables --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #ffe5ec 0%, #c9e4de 100%);
+            --primary-neon: #ff007f;
+            --secondary-electric: #7000ff;
+            --accent-yellow: #ffeb3b;
+            --card-mint: #dbf3fa;
+            --card-peach: #fde2e4;
+            --card-lavender: #e2cfea;
+            --dark-text: #231f20;
+            --white: #ffffff;
+            --success-green: #00c853;
+            --warning-orange: #ff6d00;
+        }
+
+        /* --- Global Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark-text);
+            min-height: 100vh;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--primary-neon), var(--secondary-electric));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-text);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-neon);
+        }
+
+        .cart-icon {
+            background: var(--primary-neon);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(255, 0, 127, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: linear-gradient(45deg, var(--secondary-electric), var(--primary-neon));
+            border-radius: 24px;
+            padding: 50px;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .hero-content {
+            max-width: 55%;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-content span {
+            background: var(--accent-yellow);
+            color: var(--dark-text);
+            padding: 2px 10px;
+            display: inline-block;
+            transform: rotate(-2deg);
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: var(--accent-yellow);
+            color: var(--dark-text);
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(255, 235, 59, 0.4);
+            transition: all 0.3s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 235, 59, 0.6);
+        }
+
+        .hero-graphic {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* --- Dynamic Categories Section --- */
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            margin: 50px 0 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .categories {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .cat-card {
+            padding: 35px 20px;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        }
+
+        .cat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        .cat-men { background-color: #bde0fe; color: #1d4ed8; }
+        .cat-women { background-color: #ffafcc; color: #b91c1c; }
+        .cat-kids { background-color: #ccff33; color: #3f6212; }
+        .cat-more { background-color: var(--card-lavender); color: #6d28d9; }
+
+        /* --- Creator / Inventor Section --- */
+        .inventor-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: var(--white);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .inventor-avatar {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #ff007f, #ffeb3b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 8px 20px rgba(255, 0, 127, 0.2);
+            flex-shrink: 0;
+        }
+
+        .inventor-details h3 {
+            font-size: 26px;
+            color: var(--secondary-electric);
+            margin-bottom: 5px;
+        }
+
+        .inventor-title {
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-neon);
+            margin-bottom: 12px;
+        }
+
+        .inventor-details p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* --- Variety Clothing Grid --- */
+        .products {
+            max-width: 1200px;
+            margin: 30px auto 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Inventory Badges */
+        .inventory-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--white);
+            z-index: 10;
+        }
+        .stock-low { background-color: var(--warning-orange); }
+        .stock-available { background-color: var(--success-green); }
+
+        .product-image-holder {
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+        }
+
+        /* Vibrant Placeholder Backgrounds */
+        .bg-p1 { background-color: #ffc6ff; }
+        .bg-p2 { background-color: #bdb2ff; }
+        .bg-p3 { background-color: #9bf6ff; }
+        .bg-p4 { background-color: #caffbf; }
+        .bg-p5 { background-color: #ffd6a5; }
+        .bg-p6 { background-color: #ffadad; }
+
+        .product-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-tag {
+            align-self: flex-start;
+            background: var(--secondary-electric);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark-text);
+        }
+
+        .product-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-neon);
+            margin-bottom: 15px;
+        }
+
+        .stock-count {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .add-to-cart-btn {
+            margin-top: auto;
+            background: var(--dark-text);
+            color: var(--white);
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--primary-neon);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--dark-text);
+            color: var(--white);
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        /* --- Responsive View --- */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            .hero-content {
+                max-width: 100%;
+                margin-bottom: 30px;
+            }
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            .hero-graphic {
+                width: 200px;
+                height: 200px;
+                font-size: 70px;
+            }
+            .inventor-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links {
+                display: none; /* Simplifies layout for mobile viewing */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">VibeThread</div>
+            <ul class="nav-links">
+                <li><a href="#men">Men</a></li>
+                <li><a href="#women">Women</a></li>
+                <li><a href="#kids">Kids</a></li>
+                <li><a href="#more">More Drops</a></li>
+                <li><a href="#inventor">The Inventor</a></li>
+            </ul>
+            <a href="#" class="cart-icon">Bag (0)</a>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Upgrade Your Closet In <span>VIBRANT</span> Shades</h1>
+            <p>Ditch the boring rules. Discover an elite inventory of street, casual, and statement outfits customized for India.</p>
+            <a href="#collection" class="cta-btn">Explore Inventory</a>
+        </div>
+        <div class="hero-graphic">
+            🛍️
+        </div>
+    </section>
+
+    <!-- Demographic Categorization -->
+    <h2 class="section-title" id="departments">Shop by Category</h2>
+    <section class="categories">
+        <a href="#collection" class="cat-card cat-men">🕺 Men's Apparels</a>
+        <a href="#collection" class="cat-card cat-women">💃 Women's Styling</a>
+        <a href="#collection" class="cat-card cat-kids">🧸 Kids Fashion</a>
+        <a href="#collection" class="cat-card cat-more">✨ Accessories & More</a>
+    </section>
+
+    <!-- Meet The Inventor Section -->
+    <h2 class="section-title" id="inventor">The Clothing Inventor</h2>
+    <section class="inventor-section">
+        <div class="inventor-avatar">🧑‍🎨</div>
+        <div class="inventor-details">
+            <h3>Jaxen Rossi</h3>
+            <div class="inventor-title">Lead Fashion & Textile Architect</div>
+            <p>Jaxen Rossi is the revolutionary clothing inventor behind VibeThread. Rejecting standard monochromatic rules, Jaxen formulated a textile philosophy rooted in high-saturated neon cultures, versatile streetwear utility, and comfortable silhouettes. Every piece listed below tracks straight from his micro-manufacturing lab.</p>
+        </div>
+    </section>
+
+    <!-- Product Grid Showing Varieties & Stock Levels -->
+    <h2 class="section-title" id="collection">Full Live Variety Inventory</h2>
+    <section class="products">
+        
+        <!-- Product 1: Men's Wear -->
+        <div class="product-card" id="men">
+            <span class="inventory-badge stock-low">Only 3 Left!</span>
+            <div class="product-image-holder bg-p1">🧥</div>
+            <div class="product-info">
+                <span class="product-tag">Men • Streetwear</span>
+                <div class="product-title">Electric Pink Puffer Jacket</div>
+                <div class="product-price">₹4,499</div>
+                <div class="stock-count">Available Variety: S, M, L, XL</div>
+                <button class="add-to-cart-btn">Add to Bag</button>
+            </div>
+        </div>
+
+        <!-- Product 2: Women's Wear -->
+        <div class="product-card" id="women">
+            <span class="inventory-badge stock-available">In Stock</span>
+            <div class="product-image-holder bg-p2">👗</div>
+            <div class="product-info">
+                <span class="product-tag">Women • Fusion</span>
+                <div class="product-title">Neon Pastel Geometric Kurti</div>
+                <div class="product-price">₹2,199</div>
+                <div class="stock-count">Available Variety: Free Size, Regular</div>
+                <button class="add-to-cart-btn">Add to Bag</button>
+            </div>
+        </div>
+
+        <!-- Product 3: Kids Wear -->
+        <div class="product-card" id="kids">
+            <span class="inventory-badge stock-low">Only 5 Left!</span>
+            <div class="product-image-holder bg-p3">👕</div>
+            <div class="product-info">
+                <span class="product-tag">Kids • Casual</span>
+                <div class="product-title">Dino-Graffiti Bright Yellow Tee</div>
+                <div class="product-price">₹899</div>
+                <div class="stock-count">Available Variety: Ages 4-12 Years</div>
+                <button class="add-to-cart-btn">Add to Bag</button>
+            </div>
+        </div>
+
+        <!-- Product 4: Footwear / Unisex -->
+        <div class="product-card" id="more">
+            <span class="inventory-badge stock-available">In Stock</span>
+            <div class="product-image-holder bg-p4">👟</div>
+            <div class="product-info">
+                <span class="product-tag">Unisex • Kicks</span>
+                <div class="product-title">Cyber Pastel Sneaker Drops</div>
+                <div class="product-price">₹7,999</div>
+                <div class="stock-count">Available Variety: UK Sizes 6 to 11</div>
+                <button class="add-to-cart-btn">Add to Bag</button>
+            </div>
+        </div>
+
+        <!-- Product 5: Women's Co-ords -->
+        <div class="product-card">
+            <span class="inventory-badge stock-low">Only 2 Left!</span>
+            <div class="product-image-holder bg-p5">👚</div>
+            <div class="product-info">
+                <span class="product-tag">Women • Athleisure</span>
+                <div class="product-title">Acid Lime Oversized Co-ord Set</div>
+                <div class="product-price">₹3,299</div>
+                <div class="stock-count">Available Variety: S, M, L</div>
+                <button class="add-to-cart-btn">Add to Bag</button>
+            </div>
+        </div>
+
+        <!-- Product 6: Men's Casuals -->
+        <div class="product-card">
+            <span class="inventory-badge stock-available">In Stock</span>
+            <div class="product-image-holder bg-p6">🩳</div>
+            <div class="product-info">
+                <span class="product-tag">Men • Comfort</span>
+                <div class="product-title">Tie-Dye Hyper-Purple Shorts</div>
+                <div class="product-price">₹1,499</div>
+                <div class="stock-count">Available Variety: 28, 30, 32, 34, 36</div>
+                <button class="add-to-cart-btn">Add to Bag</button>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 VibeThread India Inc. Stay Bold, Stay Bright.</p>
+    </footer>
+
+</body>
+</html>
