@@ -1,0 +1,35 @@
+steps:
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
+    - '.'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'fashionhub'
+    - '--image'
+    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
+    - '--region'
+    - 'asia-south2'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+    - '--port'
+    - '8080'
+
+images:
+- 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
