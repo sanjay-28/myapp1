@@ -29,7 +29,7 @@ steps:
     - 'managed'
     - '--allow-unauthenticated'
     - '--port'
-    - '80'
+    - '8080'
     - '--service-account'
     - 'cicd-124@cicd-tutorial-497406.iam.gserviceaccount.com'
 
