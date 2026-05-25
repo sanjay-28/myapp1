@@ -1,0 +1,35 @@
+steps:
+
+# Build Docker Image
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'us-central1-docker.pkg.dev/rama17-05-2020/demo-repo/myapp:$SHORT_SHA'
+    - '.'
+
+# Push Image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'push'
+    - 'us-central1-docker.pkg.dev/rama17-05-2020/demo-repo/myapp:$SHORT_SHA'
+
+# Deploy to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    - 'run'
+    - 'deploy'
+    - 'myapp'
+    - '--image'
+    - 'us-central1-docker.pkg.dev/rama17-05-2020/demo-repo/myapp:$SHORT_SHA'
+    - '--region'
+    - 'us-central1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+    - '--port'
+    - '80'
+
+images:
+- 'us-central1-docker.pkg.dev/rama17-05-2020/demo-repo/myapp:$SHORT_SHA'
