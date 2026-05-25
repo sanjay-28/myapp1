@@ -5,14 +5,14 @@ steps:
   args:
     - 'build'
     - '-t'
-    - 'us-central1-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
+    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
     - '.'
 
 # Push Docker image
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
-    - 'us-central1-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
+    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
 
 # Deploy to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -22,9 +22,9 @@ steps:
     - 'deploy'
     - 'myapp'
     - '--image'
-    - 'us-central1-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
+    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
     - '--region'
-    - 'us-central1'
+    - 'asia-south2'
     - '--platform'
     - 'managed'
     - '--allow-unauthenticated'
@@ -34,7 +34,7 @@ steps:
     - 'cicd-124@cicd-tutorial-497406.iam.gserviceaccount.com'
 
 images:
-- 'us-central1-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
+- 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/myapp:$SHORT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
