@@ -2,15 +2,28 @@
 <html>
 <head>
 
-    <title>FashionHub</title>
+<title>VibeThread Fashion</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<h1>FashionHub Products</h1>
+<header>
+
+<h1>VibeThread</h1>
+
+<nav>
+<a href="#">Men</a>
+<a href="#">Women</a>
+<a href="#">Kids</a>
+<a href="#">Shoes</a>
+</nav>
+
+</header>
+
+<h2 class="title">Trending Products</h2>
 
 <div id="products"></div>
 
@@ -28,7 +41,9 @@ fetch('/api/products')
 
         <div class="card">
 
-            <img src="${product.image}" width="250">
+            <img src="${product.image}">
+
+            <span class="category">${product.category}</span>
 
             <h2>${product.name}</h2>
 
@@ -36,7 +51,7 @@ fetch('/api/products')
 
             <h3>₹${product.price}</h3>
 
-            <button>Add to Cart</button>
+            <button>Add to Bag</button>
 
         </div>
 

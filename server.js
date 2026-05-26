@@ -25,7 +25,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/products', (req,res)=>{
 
-    db.query('SELECT * FROM products', (err,result)=>{
+    db.query(`
+        SELECT 
+            products.*,
+            categories.name AS category
+        FROM products
+        JOIN categories
+        ON products.category_id = categories.id
+    `,
+
+    (err,result)=>{
 
         if(err){
             res.status(500).json(err);
