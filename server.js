@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 
 const db = mysql.createConnection({
-    host: 'VM_INTERNAL_IP',
+    host: ''11.11.0.2,
     user: 'fashionuser',
     password: 'Password@123',
     database: 'fashiondb'
