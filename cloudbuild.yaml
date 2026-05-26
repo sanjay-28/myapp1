@@ -31,7 +31,7 @@ steps:
     - '--port'
     - '8080'
     - '--vpc-connector'
-    - 'cloudrun-vpc'
+    - 'cloud-run-to-mysql-server'
 
 images:
 - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
