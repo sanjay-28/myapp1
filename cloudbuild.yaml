@@ -1,40 +1,59 @@
 steps:
+  # ── 1. Build Docker image ──────────────────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:latest'
+      - '.'
+    id: Build
 
-# Build Docker image
-- name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'build'
-    - '-t'
-    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
-    - '.'
+  # ── 2. Push image to Artifact Registry ────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - push
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}'
+    id: Push
+    waitFor: [Build]
 
-# Push image
-- name: 'gcr.io/cloud-builders/docker'
-  args:
-    - 'push'
-    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
+  # ── 3. Deploy to Cloud Run ─────────────────────────────
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - '${_SERVICE}'
+      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/${_SERVICE}:${SHORT_SHA}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+      - '--vpc-connector=${_VPC_CONNECTOR}'
+      - '--set-env-vars=NODE_ENV=production,DB_HOST=${_DB_HOST},DB_NAME=${_DB_NAME}'
+      - '--set-secrets=DB_USER=${_SECRET_DB_USER}:latest,DB_PASSWORD=${_SECRET_DB_PASS}:latest,JWT_SECRET=${_SECRET_JWT}:latest'
+      - '--min-instances=0'
+      - '--max-instances=10'
+      - '--memory=512Mi'
+      - '--cpu=1'
+    id: Deploy
+    waitFor: [Push]
 
-# Deploy Cloud Run
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args:
-    - 'run'
-    - 'deploy'
-    - 'fashionhub'
-    - '--image'
-    - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
-    - '--region'
-    - 'asia-south2'
-    - '--platform'
-    - 'managed'
-    - '--allow-unauthenticated'
-    - '--port'
-    - '8080'
-    - '--vpc-connector'
-    - 'cloud-run-to-mysql-server'
-
-images:
-- 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
+substitutions:
+  _REGION:        asia-south1
+  _REPO:          fashionhub-repo
+  _SERVICE:       fashionhub
+  _DB_HOST:       '10.0.0.2'
+  _DB_NAME:       fashiondb
+  _VPC_CONNECTOR: fashionhub-connector
+  _SECRET_DB_USER: fashionhub-db-user
+  _SECRET_DB_PASS: fashionhub-db-pass
+  _SECRET_JWT:     fashionhub-jwt-secret
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: '1200s'
