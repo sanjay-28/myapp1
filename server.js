@@ -67,3 +67,42 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 
 });
+<script>
+
+fetch('/api/products')
+.then(res => res.json())
+.then(data => {
+
+    let output = '';
+
+    data.forEach(product => {
+
+        output += `
+
+        <div class="card">
+
+            <img src="${product.image}">
+
+            <div class="card-content">
+
+                <h2>${product.name}</h2>
+
+                <p>${product.description}</p>
+
+                <div class="price">₹${product.price}</div>
+
+                <button>Add to Cart</button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById('products').innerHTML = output;
+
+});
+
+</script>
