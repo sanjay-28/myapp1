@@ -1,37 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>FashionHub</title>
+
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<header>
-    <h1>FashionHub</h1>
+<h1>FashionHub Products</h1>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="men.html">Men</a>
-        <a href="women.html">Women</a>
-        <a href="collections.html">Collections</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-</header>
+<div id="products"></div>
 
-<section class="hero">
+<script>
 
-    <div class="hero-content">
-        <h2>Welcome to FashionHub</h2>
-        <p>Latest fashion trends for 2026</p>
+fetch('/api/products')
+.then(res => res.json())
+.then(data => {
 
-        <a href="collections.html" class="btn">
-            Shop Now
-        </a>
-    </div>
+    let output = '';
 
-</section>
+    data.forEach(product => {
+
+        output += `
+
+        <div class="card">
+
+            <img src="${product.image}" width="250">
+
+            <h2>${product.name}</h2>
+
+            <p>${product.description}</p>
+
+            <h3>₹${product.price}</h3>
+
+            <button>Add to Cart</button>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById('products').innerHTML = output;
+
+});
+
+</script>
 
 </body>
 </html>

@@ -5,28 +5,30 @@ const path = require('path');
 const app = express();
 
 const db = mysql.createConnection({
-    host: '11.11.0.2',
+    host: 'VM_INTERNAL_IP',
     user: 'fashionuser',
     password: 'Password@123',
     database: 'fashiondb'
 });
 
 db.connect((err)=>{
+
     if(err){
         console.log(err);
     } else {
         console.log('MySQL Connected');
     }
+
 });
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/products', (req,res)=>{
+app.get('/api/products', (req,res)=>{
 
     db.query('SELECT * FROM products', (err,result)=>{
 
         if(err){
-            res.send(err);
+            res.status(500).json(err);
         } else {
             res.json(result);
         }
