@@ -45,7 +45,7 @@ substitutions:
   _REGION:        asia-south1
   _REPO:          fashionhub-repo
   _SERVICE:       fashionhub
-  _DB_HOST:       '10.0.0.2'
+  _DB_HOST:       '11.11.0.2'
   _DB_NAME:       fashiondb
 #  _VPC_CONNECTOR: fashionhub-connector
   _VPC_CONNECTOR: cloud-run-to-mysql-server
