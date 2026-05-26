@@ -43,7 +43,7 @@ steps:
 
 substitutions:
   _REGION:        asia-south1
-  _REPO:          fashionhub-repo
+  _REPO:          cicd-repo 
   _SERVICE:       fashionhub
   _DB_HOST:       '11.11.0.2'
   _DB_NAME:       fashiondb
