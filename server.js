@@ -4,8 +4,11 @@ const path = require('path');
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 const db = mysql.createConnection({
-    host: ''11.11.0.2,
+	#    host: ',
+	host: '11.11.0.2'
     user: 'fashionuser',
     password: 'Password@123',
     database: 'fashiondb'
@@ -14,6 +17,7 @@ const db = mysql.createConnection({
 db.connect((err)=>{
 
     if(err){
+        console.log('MySQL Connection Error');
         console.log(err);
     } else {
         console.log('MySQL Connected');
@@ -21,33 +25,34 @@ db.connect((err)=>{
 
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.get('/api/products', (req,res)=>{
 
-    db.query(`
-        SELECT 
-            products.*,
-            categories.name AS category
-        FROM products
-        JOIN categories
-        ON products.category_id = categories.id
-    `,
-
-    (err,result)=>{
+    db.query('SELECT * FROM products', (err,result)=>{
 
         if(err){
-            res.status(500).json(err);
-        } else {
-            res.json(result);
+
+            console.log(err);
+
+            return res.status(500).json({
+                error: 'Database query failed'
+            });
+
         }
+
+        res.json(result);
 
     });
 
 });
 
+app.get('/health', (req,res)=>{
+    res.send('Server Healthy');
+});
+
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, ()=>{
-    console.log(`Server running on ${PORT}`);
+app.listen(PORT, '0.0.0.0', ()=>{
+
+    console.log(`Server running on port ${PORT}`);
+
 });
