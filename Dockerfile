@@ -2,7 +2,8 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev
+#RUN npm ci --omit=dev
+RUN npm install
 
 # ── Stage 2: final image ─────────────────────────────────
 FROM node:20-alpine
