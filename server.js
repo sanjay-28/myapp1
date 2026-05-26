@@ -4,50 +4,39 @@ const path = require('path');
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 const PORT = process.env.PORT || 8080;
 
-/*
-START SERVER FIRST
-IMPORTANT FOR CLOUD RUN
-*/
-
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 /*
-MYSQL CONNECTION
+MYSQL POOL
+BEST FOR CLOUD RUN
 */
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
+
     host: '11.11.0.2',
     user: 'fashionuser',
     password: 'Password@123',
     database: 'fashiondb',
-    connectTimeout: 10000
-});
 
-db.connect((err) => {
-
-    if (err) {
-
-        console.log('MYSQL CONNECTION FAILED');
-        console.log(err);
-
-    } else {
-
-        console.log('MYSQL CONNECTED');
-
-    }
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 
 });
 
 /*
-API
+TEST ROUTE
 */
 
+app.get('/health', (req, res) => {
+    res.send('Server Healthy');
+});
+
+/*
+PRODUCTS API
+*/
 
 app.get('/api/products', (req, res) => {
 
@@ -70,9 +59,11 @@ app.get('/api/products', (req, res) => {
 });
 
 /*
-HEALTH CHECK
+START SERVER
 */
 
-app.get('/health', (req, res) => {
-    res.send('Server Healthy');
+app.listen(PORT, '0.0.0.0', () => {
+
+    console.log(`Server running on port ${PORT}`);
+
 });
