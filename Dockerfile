@@ -1,18 +1,11 @@
-FROM nginx:latest
+FROM node:18
 
-RUN rm /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-RUN echo 'server { \
-    listen 8080; \
-    server_name localhost; \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
+COPY . .
 
-COPY . /usr/share/nginx/html
+RUN npm install
 
 EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "server.js"]

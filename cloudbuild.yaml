@@ -1,5 +1,6 @@
 steps:
 
+# Build Docker image
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'build'
@@ -7,11 +8,13 @@ steps:
     - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
     - '.'
 
+# Push image
 - name: 'gcr.io/cloud-builders/docker'
   args:
     - 'push'
     - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
 
+# Deploy Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
@@ -27,6 +30,8 @@ steps:
     - '--allow-unauthenticated'
     - '--port'
     - '8080'
+    - '--vpc-connector'
+    - 'cloudrun-vpc'
 
 images:
 - 'asia-south2-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:$SHORT_SHA'
