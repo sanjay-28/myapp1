@@ -19,7 +19,7 @@ steps:
     id: Push
     waitFor: [Build]
 
-  # ── 3. Deploy to Cloud Run ─────────────────────────────
+# ── 3. Deploy to Cloud Run ─────────────────────────────
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -32,7 +32,7 @@ steps:
       - '--allow-unauthenticated'
       - '--port=8080'
       - '--vpc-connector=${_VPC_CONNECTOR}'
-      - '--set-env-vars=NODE_ENV=production,DB_HOST=${_DB_HOST},DB_NAME=${_DB_NAME}'
+      - '--set-env-vars=NODE_ENV=production,DB_HOST=${_DB_HOST},DB_PORT=${_DB_PORT},DB_NAME=${_DB_NAME}'
       - '--set-secrets=DB_USER=${_SECRET_DB_USER}:latest,DB_PASSWORD=${_SECRET_DB_PASS}:latest,JWT_SECRET=${_SECRET_JWT}:latest'
       - '--min-instances=0'
       - '--max-instances=10'
@@ -43,12 +43,11 @@ steps:
 
 substitutions:
   _REGION:        asia-south1
-#  _REPO:          cicd-repo 
-  _REPO:          cicd-mumbai 
+  _REPO:          cicd-repo
   _SERVICE:       fashionhub
-  _DB_HOST:       '11.11.0.2'
+  _DB_HOST:       '11.11.0.2'          # Your MySQL Server Private IP
+  _DB_PORT:       '3306'               # Standard MySQL Port
   _DB_NAME:       fashiondb
-#  _VPC_CONNECTOR: fashionhub-connector
   _VPC_CONNECTOR: cloud-run-to-mysql-server
   _SECRET_DB_USER: fashionhub-db-user
   _SECRET_DB_PASS: fashionhub-db-pass
