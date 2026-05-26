@@ -48,6 +48,7 @@ db.connect((err) => {
 API
 */
 
+
 app.get('/api/products', (req, res) => {
 
     db.query('SELECT * FROM products', (err, result) => {
@@ -57,7 +58,7 @@ app.get('/api/products', (req, res) => {
             console.log(err);
 
             return res.status(500).json({
-                error: 'Database query failed'
+                error: err.message
             });
 
         }
