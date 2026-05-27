@@ -58,3 +58,29 @@ options:
   machineType: E2_HIGHCPU_8
 
 timeout: '1200s'
+
+steps:
+  # ... your existing build and push steps ...
+
+  # Step 2: Your existing Cloud Run deployment step
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'fashionhub'
+      - '--image=asia-south1-docker.pkg.dev/cicd-tutorial-497406/cicd-repo/fashionhub:${SHORT_SHA}' # or :latest
+      - '--region=asia-south1'
+      # Remove '--allow-unauthenticated' from this step if it's causing the deploy to crash,
+      # as we will handle it explicitly in the next step instead.
+
+  # Step 3: Automatically make the service public
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'add-iam-policy-binding'
+      - 'fashionhub'
+      - '--region=asia-south1'
+      - '--member=allUsers'
+      - '--role=roles/run.invoker'
