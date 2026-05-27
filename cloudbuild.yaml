@@ -19,7 +19,7 @@ steps:
     id: Push
     waitFor: [Build]
 
-# ── 3. Deploy to Cloud Run ─────────────────────────────
+  # ── 3. Deploy to Cloud Run ─────────────────────────────
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
