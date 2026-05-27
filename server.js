@@ -1,13 +1,13 @@
 'use strict';
 
-const express   = require('express');
-const mysql     = require('mysql2/promise');
-const bcrypt    = require('bcryptjs');
-const jwt       = require('jsonwebtoken');
-const cors      = require('cors');
-const helmet    = require('helmet');
+const express    = require('express');
+const mysql      = require('mysql2/promise'); // Using promise-based mysql2 directly
+const bcrypt     = require('bcryptjs');
+const jwt        = require('jsonwebtoken');
+const cors       = require('cors');
+const helmet     = require('helmet');
 const rateLimit = require('express-rate-limit');
-const path      = require('path');
+const path       = require('path');
 
 // ──────────────────────────────────────────────
 //  App bootstrap
@@ -25,13 +25,11 @@ const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
 app.use('/api/', limiter);
 
 // ──────────────────────────────────────────────
-//  Database pool  (matches YOUR fashiondb)
+//  Database pool (matches YOUR fashiondb)
 // ──────────────────────────────────────────────
-const mysql = require('mysql2');
-
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 3306,
+  port: parseInt(process.env.DB_PORT, 10) || 3306,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
@@ -40,13 +38,11 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-module.exports = pool.promise();
-
-
+// Verify connectivity on startup
 (async () => {
   try {
     const conn = await pool.getConnection();
-    console.log('✅ MySQL connected to fashiondb');
+    console.log('✅ MySQL connected to fashiondb via Serverless VPC');
     conn.release();
   } catch (err) {
     console.error('❌ MySQL connection failed:', err.message);
@@ -71,8 +67,7 @@ function authMiddleware(req, res, next) {
 }
 
 // ══════════════════════════════════════════════
-//  AUTH  — uses your `users` table
-//  columns: id, name, email, password, address
+//  AUTH — uses your `users` table
 // ══════════════════════════════════════════════
 app.post('/api/auth/register', async (req, res) => {
   const { name, email, password, address } = req.body;
@@ -114,7 +109,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Get logged-in user profile
 app.get('/api/auth/me', authMiddleware, async (req, res) => {
   try {
     const [rows] = await pool.execute(
@@ -144,9 +138,6 @@ app.get('/api/categories', async (req, res) => {
 
 // ══════════════════════════════════════════════
 //  PRODUCTS
-//  columns: id, name, price, category_id,
-//           brand, size, image, description
-//  stock lives in `inventory` (product_id, stock)
 // ══════════════════════════════════════════════
 app.get('/api/products', async (req, res) => {
   const { category, search, brand } = req.query;
@@ -204,7 +195,6 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-// Admin: add product
 app.post('/api/products', authMiddleware, async (req, res) => {
   const { name, price, category_id, brand, size, image, description, stock } = req.body;
   if (!name || !price || !category_id)
@@ -235,8 +225,7 @@ app.post('/api/products', authMiddleware, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════
-//  CART  — uses your `cart` table
-//  columns: id, user_id, product_id, quantity
+//  CART
 // ══════════════════════════════════════════════
 app.get('/api/cart', authMiddleware, async (req, res) => {
   try {
@@ -260,7 +249,6 @@ app.post('/api/cart', authMiddleware, async (req, res) => {
   const { product_id, quantity = 1 } = req.body;
   if (!product_id) return res.status(400).json({ error: 'product_id required' });
   try {
-    // If item already in cart, increase quantity
     const [existing] = await pool.execute(
       'SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ?',
       [req.user.id, product_id]
@@ -299,6 +287,7 @@ app.put('/api/cart/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// Remove item
 app.delete('/api/cart/:id', authMiddleware, async (req, res) => {
   try {
     await pool.execute(
@@ -312,7 +301,7 @@ app.delete('/api/cart/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Clear entire cart
+// Clear cart
 app.delete('/api/cart', authMiddleware, async (req, res) => {
   try {
     await pool.execute('DELETE FROM cart WHERE user_id = ?', [req.user.id]);
@@ -325,7 +314,6 @@ app.delete('/api/cart', authMiddleware, async (req, res) => {
 
 // ══════════════════════════════════════════════
 //  WISHLIST
-//  columns: id, user_id, product_id
 // ══════════════════════════════════════════════
 app.get('/api/wishlist', authMiddleware, async (req, res) => {
   try {
@@ -373,9 +361,6 @@ app.delete('/api/wishlist/:product_id', authMiddleware, async (req, res) => {
 
 // ══════════════════════════════════════════════
 //  ORDERS
-//  orders   : id, user_id, total_amount, order_status, created_at
-//  order_items: id, order_id, product_id, quantity, price
-//  payments : id, order_id, payment_method, payment_status, transaction_id
 // ══════════════════════════════════════════════
 app.post('/api/orders', authMiddleware, async (req, res) => {
   const { payment_method = 'cod', transaction_id = null } = req.body;
@@ -383,7 +368,6 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // Fetch user's cart
     const [cartRows] = await conn.execute(
       `SELECT c.product_id, c.quantity, p.price,
               COALESCE(i.stock, 0) AS stock
@@ -398,7 +382,6 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Cart is empty' });
     }
 
-    // Stock check
     for (const item of cartRows) {
       if (item.quantity > item.stock) {
         await conn.rollback();
@@ -410,14 +393,12 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
 
     const total_amount = cartRows.reduce((s, i) => s + i.price * i.quantity, 0);
 
-    // Create order
     const [orderResult] = await conn.execute(
       "INSERT INTO orders (user_id, total_amount, order_status) VALUES (?,?,'pending')",
       [req.user.id, total_amount]
     );
     const order_id = orderResult.insertId;
 
-    // Insert order items + reduce stock
     for (const item of cartRows) {
       await conn.execute(
         'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?,?,?,?)',
@@ -429,13 +410,11 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
       );
     }
 
-    // Create payment record
     await conn.execute(
       'INSERT INTO payments (order_id, payment_method, payment_status, transaction_id) VALUES (?,?,?,?)',
       [order_id, payment_method, payment_method === 'cod' ? 'pending' : 'paid', transaction_id]
     );
 
-    // Clear cart
     await conn.execute('DELETE FROM cart WHERE user_id = ?', [req.user.id]);
 
     await conn.commit();
@@ -449,7 +428,6 @@ app.post('/api/orders', authMiddleware, async (req, res) => {
   }
 });
 
-// Get all orders for logged-in user
 app.get('/api/orders', authMiddleware, async (req, res) => {
   try {
     const [orders] = await pool.execute(
@@ -467,7 +445,6 @@ app.get('/api/orders', authMiddleware, async (req, res) => {
   }
 });
 
-// Get single order with items
 app.get('/api/orders/:id', authMiddleware, async (req, res) => {
   try {
     const [orders] = await pool.execute(
@@ -515,7 +492,7 @@ app.post('/api/products/:id/reviews', authMiddleware, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════
-//  INVENTORY  (check stock for a product)
+//  INVENTORY
 // ══════════════════════════════════════════════
 app.get('/api/inventory/:product_id', async (req, res) => {
   try {
@@ -560,8 +537,8 @@ app.get('/health', async (req, res) => {
   try {
     await pool.execute('SELECT 1');
     res.json({ status: 'ok', db: 'connected', ts: new Date().toISOString() });
-  } catch {
-    res.status(500).json({ status: 'error', db: 'disconnected' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', db: 'disconnected', reason: err.message });
   }
 });
 
@@ -569,6 +546,9 @@ app.get('/health', async (req, res) => {
 app.get('*', (req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 );
+
+// Export pool for generic architecture compatibility, then spin up the server listener
+module.exports = pool;
 
 // ──────────────────────────────────────────────
 //  Start
