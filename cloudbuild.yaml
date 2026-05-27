@@ -43,7 +43,7 @@ steps:
 
 substitutions:
   _REGION:        asia-south1
-  _REPO:          cicd-repo
+  _REPO:          cicd-mumbai
   _SERVICE:       fashionhub
   _DB_HOST:       '11.11.0.2'          # Your MySQL Server Private IP
   _DB_PORT:       '3306'               # Standard MySQL Port
